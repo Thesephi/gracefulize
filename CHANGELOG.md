@@ -1,2 +1,2 @@
-# v0.1.0 - 24.FEB.2020
+# v0.1.1 - 24.FEB.2020
 - initial release
