@@ -1,7 +1,7 @@
 {
   "name": "gracefulize",
   "description": "minimal code to help Node.js HTTP server shut down gracefully",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "license": "MIT",
   "author": "Khang Dinh <thesephi@gmail.com>",
   "main": "src/gracefulize.js",

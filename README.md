@@ -5,13 +5,14 @@
 A Node.js HTTP server object, once listening on a handle (e.g. a port number),
 is expected to take that "handle resource" for itself until it is closed.
 
-Unless when it doesn't.
+Except when it doesn't.
 
 Say you have a Node.js HTTP server in your `server.js` file, then start it, then
-stop it (i.e. with `Ctrl + C`), the HTTP server can be killed together with the
+stop it with `Ctrl + C`, that HTTP server can be killed together with the
 host process (the `server.js` process itself), but sometimes it doesn't cleanly
 release the aforementioned "handle resource". In my experience, most times it
-does, but it's plain annoying when it doesn't.
+does, but it's plain annoying when it doesn't, e.g. when the resource is a unix-
+socket.
 
 While there are "scientific" explanations for all this (when it does, and when
 not), they are beyond the scope of this document, the purpose of which is to
@@ -35,7 +36,7 @@ accordingly.
 # How
 
 If you already have done something like this before:
-```
+```javascript
 let express = require('express');
 let myServer = express.listen(3000, () => {
   console.log('server started at port 3000');
@@ -43,7 +44,7 @@ let myServer = express.listen(3000, () => {
 ```
 
 Then you only need to add 1 additional line now:
-```
+```javascript
 let express = require('express');
 let myServer = express.listen(3000, () => {
   console.log('server started at port 3000');
@@ -52,9 +53,11 @@ let myServer = express.listen(3000, () => {
 require('gracefulize')(myServer);
 ```
 
-Please note that the above example uses `ExpressJS`, but it is essentially the same for `Koa` or any other `Node.js-based` HTTP server.
+Please note that the above example uses `ExpressJS`, but it is essentially the
+same for `Koa` or any other `Node.js`-based HTTP server.
 
 # Do I need this?
 
-- If you have _never_ implemented anything to ensure a graceful shutdown of your Node.js HTTP server for your server app before, then yes
+- If you have _never_ implemented anything to ensure a graceful shutdown of your
+Node.js HTTP server for your server app before, then yes
 - Otherwise, probably not

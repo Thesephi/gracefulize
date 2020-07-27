@@ -2,12 +2,17 @@ let inited = false;
 let sigintCalledTimes = 0;
 let lastSigintCalledTS = 0;
 
-module.exports = function gracefulize(nodeServer) {
+module.exports = function gracefulize(nodeServer, opts) {
 
   if (inited) {
     return;
   }
   inited = true;
+
+  if (opts == null) {
+    opts = {};
+  }
+  const log = opts.log || console.log;
 
   process.on('SIGINT', () => {
 
@@ -15,7 +20,7 @@ module.exports = function gracefulize(nodeServer) {
     sigintCalledTimes++;
 
     if (sigintCalledTimes === 1) {
-      console.log('gracefully shutting down Node.js server');
+      log(`${Date.now()} :: gracefully shutting down Node.js http server`);
       nodeServer.close();
       return;
     }
@@ -23,7 +28,7 @@ module.exports = function gracefulize(nodeServer) {
     if (sigintCalledTimes >= 2) {
       const now = Date.now();
       if (now - lastSigintCalledTS >= 5000) {
-        console.log('force process exiting...');
+        log(`${Date.now()} :: force process exiting...`);
         process.exit(1);
       }
     }
@@ -32,7 +37,9 @@ module.exports = function gracefulize(nodeServer) {
 
   nodeServer.on('close', () => {
     if (sigintCalledTimes >= 1) {
-      process.exit();
+      if (opts.autoExitProcessAfterHttpServerClosed === true) {
+        process.exit();
+      }
     }
   });
 
